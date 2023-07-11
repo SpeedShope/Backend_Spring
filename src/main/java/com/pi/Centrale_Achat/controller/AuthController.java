@@ -67,6 +67,26 @@ public class AuthController {
 
     private final Map<String, Integer> loginAttempts = new HashMap<>();
 
+    
+    
+    //code generator  for mail validation 
+    public  static String CodeGen(){
+        String caracters="ABCDEFJHIJKLMNOPQRSTUVWXYZ0123456789";
+        String randomcode="";
+        int lenght=6;
+        Random rand=new Random();
+        char[] text = new char[lenght];
+        for(int i=0;i<lenght;i++){
+            text[i]=caracters.charAt(rand.nextInt(caracters.length()));
+        }
+        for(int i=0;i<lenght;i++){
+        randomcode+=text[i];
+        
+        }
+        return randomcode ;
+       
+    }
+    
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest, HttpServletRequest request) throws MessagingException {
@@ -93,7 +113,7 @@ public class AuthController {
             e.printStackTrace();
         }
 
-        String verificationCode = UUID.randomUUID().toString();
+        String verificationCode = CodeGen().toString();
 
         List<String> strRoles = signUpRequest.getRole();
         System.out.println("Roles received "+strRoles);
