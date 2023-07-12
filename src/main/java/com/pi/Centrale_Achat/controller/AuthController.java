@@ -209,8 +209,13 @@ public class AuthController {
 
         return ResponseEntity.ok(new MessageResponse("Votre compte a été vérifié avec succès."));
     }
+    @PutMapping("/ValidateAccount/{username}")
+    public User ValidateAccount(@PathVariable String username) {
+    	return userserv.ValidateAccount(username); 
+    }
 
 
+     
 
 
 
