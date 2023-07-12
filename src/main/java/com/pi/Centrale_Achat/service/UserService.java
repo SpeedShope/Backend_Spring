@@ -13,5 +13,7 @@ public interface UserService {
      User getMyProfile(UserDetails userDetails);
 
      List <User> getAllUsers();
-
+     User findUserByUsername(String username); 
+     public User ValidateAccount(String username) ; 
+     
 }

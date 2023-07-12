@@ -48,6 +48,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @CrossOrigin(origins = {"http://localhost:4200" , "http://localhost:4000"}, maxAge = 3600, allowCredentials="true")
 public class AuthController {
+	@Autowired
+	UserServiceImpl userserv; 
 
     private final    AuthenticationManager authenticationManager;
 
@@ -67,6 +69,26 @@ public class AuthController {
 
     private final Map<String, Integer> loginAttempts = new HashMap<>();
 
+    
+    
+    //code generator  for mail validation 
+    public  static String CodeGen(){
+        String caracters="ABCDEFJHIJKLMNOPQRSTUVWXYZ0123456789";
+        String randomcode="";
+        int lenght=6;
+        Random rand=new Random();
+        char[] text = new char[lenght];
+        for(int i=0;i<lenght;i++){
+            text[i]=caracters.charAt(rand.nextInt(caracters.length()));
+        }
+        for(int i=0;i<lenght;i++){
+        randomcode+=text[i];
+        
+        }
+        return randomcode ;
+       
+    }
+    
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest, HttpServletRequest request) throws MessagingException {
@@ -93,7 +115,7 @@ public class AuthController {
             e.printStackTrace();
         }
 
-        String verificationCode = UUID.randomUUID().toString();
+        String verificationCode = CodeGen().toString();
 
         List<String> strRoles = signUpRequest.getRole();
         System.out.println("Roles received "+strRoles);
@@ -187,8 +209,13 @@ public class AuthController {
 
         return ResponseEntity.ok(new MessageResponse("Votre compte a été vérifié avec succès."));
     }
+    @PutMapping("/ValidateAccount/{username}")
+    public User ValidateAccount(@PathVariable String username) {
+    	return userserv.ValidateAccount(username); 
+    }
 
 
+     
 
 
 
@@ -326,7 +353,11 @@ public class AuthController {
 
         return ResponseEntity.ok().body(new MessageResponse("Password reset successful!"));
     }
-
+   
+    @GetMapping("/verifyUserByusername/{username}")
+    public User findUserByUsername( @PathVariable("username") String username) {
+    	 return userserv.findUserByUsername(username); 
+    }
 
 
 
