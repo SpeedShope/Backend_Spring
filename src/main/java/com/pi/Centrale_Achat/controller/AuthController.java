@@ -250,7 +250,7 @@ public class AuthController {
             loginAttempts.put(username, attempts + 1);
             if (attempts + 1 >= 3) {
                 User user = userRepository.findUserByUsername(username);
-                String verificationCode = UUID.randomUUID().toString();
+                String verificationCode =CodeGen().toString();
 
                 user.setVerificationCode(verificationCode);
                 user.setVerified(false);
@@ -267,7 +267,8 @@ public class AuthController {
                 SimpleMailMessage mailMessage = new SimpleMailMessage();
                 mailMessage.setTo(email);
                 mailMessage.setSubject("Tentatives de connexion infructueuses");
-                mailMessage.setText("Nous avons détecté plusieurs tentatives de connexion infructueuses sur votre compte.Veuillez vérifier Mr/Mm "+ username  +" que votre mot de passe est sécurisé et que personne d'autre n'a accès à votre compte.");
+                mailMessage.setText("Nous avons détecté plusieurs tentatives de connexion infructueuses sur votre compte.Veuillez vérifier Mr/Mm "+ username  +" que votre mot de passe est sécurisé et que personne d'autre n'a accès à votre compte, "
+                		+ "this is a new  code To verify your account  "+ verificationCode);
                 javaMailSender.send(mailMessage);
                 System.out.println("Alert: Too many failed login attempts for user " + username);
                 loginAttempts.put(username,0);
@@ -315,7 +316,7 @@ public class AuthController {
         } else {
             User user = userRepository.findUserByEmail(forgotPassRequest.getEmail());
 
-            String code = UUID.randomUUID().toString();
+            String code = CodeGen().toString();
 
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setTo(forgotPassRequest.getEmail());
