@@ -191,20 +191,19 @@ public class AuthController {
     }
 
 
-    @PostMapping("resendVerifCode/{username}")
-    public User resendAndSaveNewVerifCode( @PathVariable("username") String username) {
-		User user = userRepository.findUserByUsername(username);
+    @PostMapping("/resendVerifCode/{username}")
+    public ResponseEntity<?>  resendAndSaveNewVerifCode( @PathVariable("username") String username) throws MessagingException {
 
-    	try {
+    
         	String code =CodeGen().toString();
-        	
+    		User user = userRepository.findUserByUsername(username);
         	user.setVerificationCode(code);
-        	
+        	userRepository.save(user);
 
              SimpleMailMessage mailMessage = new SimpleMailMessage();
              mailMessage.setTo(user.getEmail());
-             String message="Bonjour" +user.getNom();
-             mailMessage.setText(" Veuillez suivre les instructions pour vérifier votre compte , utiliser ce code pour verifier votre compte ,"+code);
+             mailMessage.setSubject("Code Re-sent");
+             String message="Bonjour" +user.getNom()+"\n"+" Veuillez suivre les instructions pour vérifier votre compte , utiliser ce code pour verifier votre compte ,"+code;
 
              MimeMessage mimeMessage = javaMailSender.createMimeMessage();
              MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
@@ -213,14 +212,13 @@ public class AuthController {
              helper.setText(message, true);
 
              javaMailSender.send(mimeMessage);
-    	}catch (Exception e) {
-    		System.out.println(e);
-		}
+			return ResponseEntity.ok(user);
+    
     
 
 
 
-         return userRepository.save(user);
+
     	
     }
 
