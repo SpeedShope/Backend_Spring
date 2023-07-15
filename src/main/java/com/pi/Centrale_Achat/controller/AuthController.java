@@ -15,6 +15,8 @@ import com.pi.Centrale_Achat.security.jwt.JwtUtils;
 import com.pi.Centrale_Achat.serviceImpl.UserDetailsImpl;
 import com.pi.Centrale_Achat.serviceImpl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -189,6 +191,38 @@ public class AuthController {
     }
 
 
+    @PostMapping("resendVerifCode/{email}")
+    public User resendAndSaveNewVerifCode( @PathVariable("email") String email) {
+		User user = userRepository.findUserByEmail(email);
+
+    	try {
+        	String code =CodeGen().toString();
+        	
+        	user.setVerificationCode(code);
+        	
+
+             SimpleMailMessage mailMessage = new SimpleMailMessage();
+             mailMessage.setTo(email);
+             String message="Bonjour" +user.getNom();
+             mailMessage.setText(" Veuillez suivre les instructions pour vérifier votre compte , utiliser ce code pour verifier votre compte ,"+code);
+
+             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+             helper.setTo(mailMessage.getTo());
+             helper.setSubject(mailMessage.getSubject());
+             helper.setText(message, true);
+
+             javaMailSender.send(mimeMessage);
+    	}catch (Exception e) {
+    		System.out.println(e);
+		}
+    
+
+
+
+         return userRepository.save(user);
+    	
+    }
 
 
 
