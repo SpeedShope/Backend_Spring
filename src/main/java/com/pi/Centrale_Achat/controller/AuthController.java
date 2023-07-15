@@ -191,9 +191,9 @@ public class AuthController {
     }
 
 
-    @PostMapping("resendVerifCode/{email}")
-    public User resendAndSaveNewVerifCode( @PathVariable("email") String email) {
-		User user = userRepository.findUserByEmail(email);
+    @PostMapping("resendVerifCode/{username}")
+    public User resendAndSaveNewVerifCode( @PathVariable("username") String username) {
+		User user = userRepository.findUserByUsername(username);
 
     	try {
         	String code =CodeGen().toString();
@@ -202,7 +202,7 @@ public class AuthController {
         	
 
              SimpleMailMessage mailMessage = new SimpleMailMessage();
-             mailMessage.setTo(email);
+             mailMessage.setTo(user.getEmail());
              String message="Bonjour" +user.getNom();
              mailMessage.setText(" Veuillez suivre les instructions pour vérifier votre compte , utiliser ce code pour verifier votre compte ,"+code);
 
