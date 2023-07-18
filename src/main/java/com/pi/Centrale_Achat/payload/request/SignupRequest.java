@@ -2,6 +2,7 @@ package com.pi.Centrale_Achat.payload.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -20,6 +21,8 @@ public class SignupRequest {
     @Size(max = 50)
     @Email
     private String email;
+    
+    private MultipartFile image;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private String dateNaissance;
@@ -45,7 +48,15 @@ public class SignupRequest {
         return address;
     }
 
-    public void setAddress(String address) {
+    public MultipartFile getImage() {
+		return image;
+	}
+
+	public void setImage(MultipartFile image) {
+		this.image = image;
+	}
+
+	public void setAddress(String address) {
         this.address = address;
     }
 

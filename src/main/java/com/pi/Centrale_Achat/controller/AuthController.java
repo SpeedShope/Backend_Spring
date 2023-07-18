@@ -33,6 +33,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,6 +41,11 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -48,7 +54,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:4200" , "http://localhost:4000"}, maxAge = 3600, allowCredentials="true")
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:4000"}, maxAge = 3600, allowCredentials = "true", allowedHeaders = {"Content-Type"})
 public class AuthController {
 	@Autowired
 	UserServiceImpl userserv; 
@@ -93,8 +99,18 @@ public class AuthController {
     
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest, HttpServletRequest request) throws MessagingException {
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+    public ResponseEntity<?> registerUser(@Valid SignupRequest signUpRequest, BindingResult result, HttpServletRequest request) throws MessagingException {
+       
+    	  // Check for validation errors in the request body
+        if (result.hasErrors()) {
+            // Handle validation errors and return a bad request response
+            List<String> errors = result.getFieldErrors().stream()
+                .map(error -> error.getDefaultMessage())
+                .collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(new MessageResponse("errors"));
+        }
+
+    	if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Username is already taken!"));
@@ -158,7 +174,21 @@ public class AuthController {
         user.setRoles(roles);
 
         user.setVerificationCode(verificationCode);
-
+        // Handle the image upload
+        String imageName = null;
+        try {
+            MultipartFile imageFile = signUpRequest.getImage();
+            if (imageFile != null && !imageFile.isEmpty()) {
+                // Generate a unique image name, you can use UUID.randomUUID().toString() for example.
+                imageName = signUpRequest.getNom()+".png";
+                Path imagePath = Paths.get("src/main/resources/images", imageName);
+                Files.write(imagePath, imageFile.getBytes());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception as per your requirement
+        }
+        user.setImage(imageName);
         userRepository.save(user);
         String appUrl = "http://localhost:9090/api/auth/SignUp";
         String message = "<html><body><p>Bonjour " + signUpRequest.getNom() + ",</p>" +

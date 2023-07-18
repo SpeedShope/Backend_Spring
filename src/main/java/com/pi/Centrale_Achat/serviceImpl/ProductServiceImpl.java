@@ -77,7 +77,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-
     public Product save(@AuthenticationPrincipal UserDetails userDetails, String name, float price, int qte, String description, int minStock, int idCategory, MultipartFile file) throws IOException {
         String currentUser = userDetails.getUsername();
         User user1 = userRepo.findUserByUsername(currentUser);
@@ -103,6 +102,7 @@ public class ProductServiceImpl implements ProductService {
         mvStockRepo.save(mvStk);
 
         return p;      }
+    
     @Override
     public Product addAvecImage(@AuthenticationPrincipal UserDetails userDetails,Product product, MultipartFile image) {
         String currecntUserName = userDetails.getUsername();

@@ -21,5 +21,5 @@ public interface UserRepo extends JpaRepository<User,Integer> {
     User findByVerificationCode(String code);
 
     List<User> findAll();
-
+ 
 }
