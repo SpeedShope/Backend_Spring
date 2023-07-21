@@ -20,6 +20,7 @@ import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
@@ -180,7 +181,7 @@ public class AuthController {
             MultipartFile imageFile = signUpRequest.getImage();
             if (imageFile != null && !imageFile.isEmpty()) {
                 // Generate a unique image name, you can use UUID.randomUUID().toString() for example.
-                imageName = signUpRequest.getNom()+".png";
+                imageName = signUpRequest.getUsername()+".png";
                 Path imagePath = Paths.get("src/main/resources/images", imageName);
                 Files.write(imagePath, imageFile.getBytes());
             }
@@ -240,7 +241,6 @@ public class AuthController {
              helper.setTo(mailMessage.getTo());
              helper.setSubject(mailMessage.getSubject());
              helper.setText(message, true);
-
              javaMailSender.send(mimeMessage);
 			return ResponseEntity.ok(user);
     
@@ -254,7 +254,22 @@ public class AuthController {
 
 
 
+    @GetMapping("/user/profile-picture/{imageName}")
+    @CrossOrigin(origins ="http://localhost:4200/", allowedHeaders = "*")
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable String imageName) {
+        try {
+            Path imagePath = Paths.get("src/main/resources/images", imageName);
+            byte[] imageBytes = Files.readAllBytes(imagePath);
 
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_PNG); // Change to the appropriate image type if needed
+            headers.setContentType(MediaType.IMAGE_JPEG);
+            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
 
 

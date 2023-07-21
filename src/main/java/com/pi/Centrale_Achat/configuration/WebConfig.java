@@ -15,6 +15,7 @@ public class WebConfig implements WebMvcConfigurer{
 				"PUT", "DELETE");
 		
 	}
+	
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
