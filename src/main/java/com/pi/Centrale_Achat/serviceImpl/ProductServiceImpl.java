@@ -66,6 +66,11 @@ public class ProductServiceImpl implements ProductService {
         return productRepo.findByTender_Id(idtender);
     }
     @Override
+    public Product showProduct(int idproduct) {
+
+        return productRepo.findById(idproduct).orElse(null);
+    }
+    @Override
     public List<Product> show_ProductsOf_Category(int idCategory) {
         Category category = categoryRepo.findById(idCategory).get();
         return category.getProducts();

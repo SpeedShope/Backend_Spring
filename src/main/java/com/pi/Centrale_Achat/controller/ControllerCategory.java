@@ -55,6 +55,7 @@ public class ControllerCategory {
     }
     @PostMapping("/saveCategorie")
     @PreAuthorize("hasRole('SUPPLIER')")
+
     public ResponseEntity<?> saveCategorie(@AuthenticationPrincipal UserDetails userDetails,@RequestBody Category ca){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
