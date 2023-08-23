@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface ProductService {
+     Product showProduct(int idproduct);
     List<Product> show_AllProducts();
     List<Product> show_ProductsOf_Category(int idCategory);
 
