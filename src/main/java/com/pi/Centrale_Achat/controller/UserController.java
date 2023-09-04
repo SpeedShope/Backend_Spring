@@ -60,6 +60,11 @@ public class UserController {
         return ResponseEntity.ok(getUser);
     }
 
+@PutMapping("/ChangeUserRole/{id}")
+	 User changeUserRole(@PathVariable("id") int id) {
+		 return userService.changeUserRole(id);
+		 
+	 }
 
 
 }
