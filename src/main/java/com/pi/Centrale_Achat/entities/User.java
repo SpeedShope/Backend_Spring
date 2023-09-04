@@ -60,6 +60,10 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "userComment",cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
     @JsonIgnore
     List<Comment>comments;
+    @OneToMany(mappedBy = "user",cascade = CascadeType.PERSIST)
+    @JsonIgnore
+    List<Contract> contracts ; 
+    
     public User(String nom,String prenom,String username,String address, String numTel,String email,String password,Date dateNaissance){
         this.nom = nom;
         this.prenom =prenom ;
