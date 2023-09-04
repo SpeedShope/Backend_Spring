@@ -1,5 +1,7 @@
 package com.pi.Centrale_Achat.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -9,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,5 +41,14 @@ public class ContractController {
 		  return contractserv.saveContractandAssigntoUserContract(c,userid);
 
 	}
-
+	 
+	 @GetMapping("getAllContracts")
+		public List<Contract> getAllContracts() {
+			return contractserv.getAllContracts();
+		}
+	 
+	 @GetMapping("getcontractByid/{id}")
+	  Contract findContract(@PathVariable("id") int id ) {
+		 return contractserv.getContractById(id);
+	 }
 }

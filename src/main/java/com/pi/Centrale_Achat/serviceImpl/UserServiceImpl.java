@@ -17,9 +17,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+
+import javax.management.relation.RoleStatus;
 
 import static com.sun.mail.imap.protocol.BASE64MailboxDecoder.decode;
 
@@ -31,6 +35,8 @@ public class UserServiceImpl implements UserService {
     private final    UserRepo userRepository;
 
     private final PasswordEncoder encoder;
+    @Autowired
+    RoleeRepo rolerep;
 
 
 
@@ -118,4 +124,39 @@ public class UserServiceImpl implements UserService {
 		 
 	}
 
-}
+
+
+	@Override
+	public User changeUserRole(int id) {
+	    Optional<User> optionalUser = userRepository.findById(id);
+
+	    if (optionalUser.isPresent()) {
+	        User user = optionalUser.get();
+	        
+	        // Create or retrieve the ROLE_DELIVERY role
+	        Role deliveryRole = rolerep.findByName(ERole.ROLE_DELIVERY).orElse(null);
+	        if (deliveryRole == null) {
+	            // Role doesn't exist, create it and save
+	            deliveryRole = new Role(ERole.ROLE_DELIVERY);
+	            rolerep.save(deliveryRole);
+	        }
+	        
+	        // Set the user's roles to include ROLE_DELIVERY
+	        Set<Role> userRoles = user.getRoles();
+	        userRoles.add(deliveryRole);
+	        user.setRoles(userRoles);
+	        
+	        // Save the updated user
+	        return userRepository.save(user);
+	    } else {
+	        // Handle the case where the user with the given ID is not found
+	        // You can throw an exception or return null, depending on your requirements
+	        return null;
+	    }
+	}
+
+	}
+
+
+
+
