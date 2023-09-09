@@ -1,10 +1,7 @@
 package com.pi.Centrale_Achat.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,18 +14,21 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "Orders")
+@ToString
 public class Order implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     Date datCmd;
     String code;
-    int qte;
-    @JsonIgnore
+
+
+
     @JoinTable(name = "oders_produts")
-    @ManyToMany()
-    List<Product>products;
-    @JsonIgnore
+    @ManyToMany( cascade = CascadeType.PERSIST)
+    List<Product> products;
+
+
     @OneToOne(mappedBy = "order", cascade = {CascadeType.PERSIST,CascadeType.REMOVE} )
     Bill bill;
     @JsonIgnore

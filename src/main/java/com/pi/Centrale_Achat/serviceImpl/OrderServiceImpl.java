@@ -23,36 +23,18 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepo productRepo;
 
 
-    public Order ajouter(@AuthenticationPrincipal UserDetails userDetails, Order order , int idP) {
-        String currentUser = userDetails.getUsername();
+    public Order ajouter(@AuthenticationPrincipal UserDetails userDetails, Order order ) {
+        System.out.println("==================>"+order);
+       String currentUser = userDetails.getUsername();
         User user1 = userRepo.findUserByUsername(currentUser);
-        Product p = productRepo.findById(idP).orElse(null);
-        if (order.getProducts() == null) {
-            assert p != null;
-            if (p.getQte() > order.getQte()) {
-                p.setQte(p.getQte() - order.getQte());
-                productRepo.save(p);
-                List<Product> products = new ArrayList<>();
-                products.add(p);
-                order.setProducts(products);
+
+
                 order.setCode(UUID.randomUUID().toString());
                 order.setUser(user1);
-                orederRepo.save(order);
-            } else {
-                System.out.println("invalid qte");
-            }
-        } else {
-            assert p != null;
-            if (p.getQte() > order.getQte()) {
-                p.setQte(p.getQte() - order.getQte());
-                order.getProducts().add(p);
-                order.setUser(user1);
-                orederRepo.save(order);
-            } else {
-                System.out.println("invalid qte");
-            }
-        }
+
+              // return orederRepo.save(order);
         return order;
+
 
     }
 

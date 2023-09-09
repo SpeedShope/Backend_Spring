@@ -26,7 +26,7 @@ public class Product implements Serializable {
     String image;
     int qte;
     String description;
-    int minStock;
+    int maxStock;
     @Temporal(TemporalType.DATE)
     Date startDateDiscount;
     @Temporal(TemporalType.DATE)
