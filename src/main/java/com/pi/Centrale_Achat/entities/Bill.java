@@ -1,4 +1,5 @@
 package com.pi.Centrale_Achat.entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,5 +23,6 @@ public class Bill implements Serializable {
     LocalDate dateFacture;
     String code;
     @OneToOne
+    @JsonIgnore
     Order order;
 }
