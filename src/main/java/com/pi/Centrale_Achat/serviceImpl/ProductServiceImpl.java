@@ -224,7 +224,7 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
-    @Scheduled(fixedDelay = 1000)//
+  //  @Scheduled(fixedDelay = 1000)//
     public void discount() {
         Date currentDate = new Date();
         List<Product> products = productRepo.findAll();

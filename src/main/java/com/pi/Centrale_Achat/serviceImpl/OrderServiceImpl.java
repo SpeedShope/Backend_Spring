@@ -1,7 +1,9 @@
 package com.pi.Centrale_Achat.serviceImpl;
+import com.pi.Centrale_Achat.entities.Bill;
 import com.pi.Centrale_Achat.entities.Order;
 import com.pi.Centrale_Achat.entities.Product;
 import com.pi.Centrale_Achat.entities.User;
+import com.pi.Centrale_Achat.repositories.BillRepo;
 import com.pi.Centrale_Achat.repositories.OrderRepo;
 import com.pi.Centrale_Achat.repositories.ProductRepo;
 import com.pi.Centrale_Achat.repositories.UserRepo;
@@ -12,6 +14,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,6 +23,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepo orederRepo;
+
+    private final BillRepo billRepo;
     private final UserRepo userRepo;
     private final ProductRepo productRepo;
 
@@ -31,9 +37,16 @@ public class OrderServiceImpl implements OrderService {
 
                 order.setCode(UUID.randomUUID().toString());
                 order.setUser(user1);
+                Bill bill = order.getBill();
+               order = orederRepo.save(order);
+               bill.setOrder(order);
+               bill.setDateFacture(LocalDate.now());
+               bill = billRepo.save(bill);
+               order.setBill(bill);
+               return order;
 
-              // return orederRepo.save(order);
-        return order;
+
+     //   return order;
 
 
     }

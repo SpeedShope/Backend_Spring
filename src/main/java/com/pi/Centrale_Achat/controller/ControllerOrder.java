@@ -35,9 +35,8 @@ public class ControllerOrder {
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity <Order> addOrder(@AuthenticationPrincipal UserDetails userDetails, @RequestPart Order order, @RequestPart List<Product> products, @RequestPart Bill bill) {
-        order.setBill(bill);
-        order.setProducts(products);
+    public ResponseEntity <Order> addOrder(@AuthenticationPrincipal UserDetails userDetails, @RequestBody Order order) {
+
         System.out.println(order);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
