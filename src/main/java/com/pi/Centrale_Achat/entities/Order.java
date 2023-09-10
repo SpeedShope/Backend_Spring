@@ -25,11 +25,11 @@ public class Order implements Serializable {
 
 
     @JoinTable(name = "oders_produts")
-    @ManyToMany( cascade = CascadeType.PERSIST)
+    @ManyToMany
     List<Product> products;
 
 
-    @OneToOne(mappedBy = "order", cascade = {CascadeType.PERSIST,CascadeType.REMOVE} )
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     Bill bill;
     @JsonIgnore
     @ManyToOne
