@@ -9,6 +9,7 @@ public interface contractServices {
 	Contract saveContractandAssigntoUserContract(Contract c , int userid) ; 
 	List<Contract> getAllContracts(); 
 	Contract getContractById(int id ); 
+	Contract acceptContract(int id); 
 	
 	
 	
