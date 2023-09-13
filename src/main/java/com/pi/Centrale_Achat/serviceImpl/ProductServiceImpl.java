@@ -82,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product save(@AuthenticationPrincipal UserDetails userDetails, String name, float price, int qte, String description, int minStock, int idCategory, MultipartFile file) throws IOException {
+    public Product save(@AuthenticationPrincipal UserDetails userDetails, String name, float price, int qte, String description, int maxStock, int idCategory, MultipartFile file) throws IOException {
         String currentUser = userDetails.getUsername();
         User user1 = userRepo.findUserByUsername(currentUser);
 
@@ -92,7 +92,7 @@ public class ProductServiceImpl implements ProductService {
         p.setDescription(description);
         p.setName(name);
         p.setPrice(price);
-        p.setMinStock(minStock);
+        p.setMaxStock(maxStock);
         p.setCategory(categoryRepo.findById(idCategory).orElse(null));
         p.setQte(qte);
 
@@ -141,7 +141,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product modifier(@AuthenticationPrincipal UserDetails userDetails,String name,
-                            float price, String description, int minStock, MultipartFile file, int idP) throws IOException {
+                            float price, String description, int maxStock, MultipartFile file, int idP) throws IOException {
         String currentUser = userDetails.getUsername();
         User user1 = userRepo.findUserByUsername(currentUser);
         Product p = productRepo.findById(idP).orElse(null);
@@ -150,7 +150,7 @@ public class ProductServiceImpl implements ProductService {
             p.setName(name);
             p.setDescription(description);
             p.setPrice(price);
-            p.setMinStock(minStock);
+            p.setMaxStock(maxStock);
             p.setImage(file.getOriginalFilename());
             productRepo.save(p);
         }
@@ -224,7 +224,7 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
-    @Scheduled(fixedDelay = 1000)//
+  //  @Scheduled(fixedDelay = 1000)//
     public void discount() {
         Date currentDate = new Date();
         List<Product> products = productRepo.findAll();
@@ -263,7 +263,7 @@ public class ProductServiceImpl implements ProductService {
     public void notifier_Furnisseur(){
         List<Product> products = productRepo.findAll();
         for (Product p : products) {
-            if (p.getQte() <p.getMinStock()){
+            if (p.getQte() <p.getMaxStock()){
                 String recipient_fournisseur=p.getUser().getNumTel();
                 String message = String.format("Alert: Product %s has reached the minimum quantity of %d", p.getName(), p.getQte());
                 smsService.sendSMS(recipient_fournisseur,message);
@@ -275,7 +275,7 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    public void provide_Tender(@AuthenticationPrincipal UserDetails userDetails , String name, float price, int qte, String description, int minStock, MultipartFile file, int idTender)throws IOException{
+    public void provide_Tender(@AuthenticationPrincipal UserDetails userDetails , String name, float price, int qte, String description, int maxStock, MultipartFile file, int idTender)throws IOException{
         String currentUserName = userDetails.getUsername();
         User currentUser = userRepo.findUserByUsername(currentUserName);
         Tender tender= tenderRepo.findById(idTender).get();
@@ -286,7 +286,7 @@ public class ProductServiceImpl implements ProductService {
         product.setDescription(description);
         product.setName(name);
         product.setPrice(price);
-        product.setMinStock(minStock);
+        product.setMaxStock(maxStock);
 
 
         product.setQte(qte);

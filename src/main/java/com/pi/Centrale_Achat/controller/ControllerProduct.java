@@ -195,7 +195,7 @@ public class ControllerProduct {
 
 
     }
-    @GetMapping("/showproduct/idProduct")
+    @GetMapping("/showproduct/{idProduct}")
 
     public Product showProduct(@PathVariable int idProduct){
         return  productService.showProduct(idProduct);

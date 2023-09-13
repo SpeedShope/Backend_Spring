@@ -1,8 +1,6 @@
 package com.pi.Centrale_Achat.entities;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,6 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
 public class Bill implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,5 +21,6 @@ public class Bill implements Serializable {
     LocalDate dateFacture;
     String code;
     @OneToOne
+    @JsonIgnore
     Order order;
 }

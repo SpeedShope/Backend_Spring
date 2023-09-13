@@ -1,4 +1,5 @@
 package com.pi.Centrale_Achat.controller;
+import com.pi.Centrale_Achat.entities.Bill;
 import com.pi.Centrale_Achat.entities.Order;
 import com.pi.Centrale_Achat.entities.Product;
 import com.pi.Centrale_Achat.entities.User;
@@ -7,6 +8,7 @@ import com.pi.Centrale_Achat.repositories.UserRepo;
 import com.pi.Centrale_Achat.serviceImpl.OrderServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -31,16 +33,20 @@ public class ControllerOrder {
     private final OrderRepo orderRepo;
 
 
-    @PostMapping("/add/{idP}")
+    @PostMapping("/add")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public Order addOrder(@AuthenticationPrincipal UserDetails userDetails, @RequestBody Order o, @PathVariable("idP") int idP) {
+    public ResponseEntity <Order> addOrder(@AuthenticationPrincipal UserDetails userDetails, @RequestBody Order order) {
+
+        System.out.println(order);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
         User currentUser = userRepo.findUserByUsername(currentUserName);
         if (currentUser==null) {
             System.out.println("Vous devez se connecter");
         }
-        return orderService.ajouter(userDetails , o , idP);
+
+                orderService.ajouter(userDetails , order );
+        return ResponseEntity.ok().body(order);
     }
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasRole('CUSTOMER')")
@@ -77,7 +83,7 @@ public class ControllerOrder {
 
 
     @GetMapping("/orders")
-    @PreAuthorize("hasRole('CUSTOMER')")
+    @PreAuthorize("hasRole('CUSTOMER')or hasRole('SUPPLIER')")
     public List<Order> getOrdersForCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
         String currentUserName = userDetails.getUsername();
         User currentUser = userRepo.findUserByUsername(currentUserName);

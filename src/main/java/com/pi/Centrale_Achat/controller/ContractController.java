@@ -52,7 +52,6 @@ public class ContractController {
 	  Contract findContract(@PathVariable("id") int id ) {
 		 return contractserv.getContractById(id);
 	 }
-	 
 	 @PutMapping("acceptContract/{id}")
 		public Contract acceptContract(@PathVariable("id") int id) {
 			return contractserv.acceptContract(id);
