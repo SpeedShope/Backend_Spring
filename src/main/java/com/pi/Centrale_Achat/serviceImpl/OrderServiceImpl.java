@@ -30,28 +30,23 @@ public class OrderServiceImpl implements OrderService {
 
 
     public Order ajouter(@AuthenticationPrincipal UserDetails userDetails, Order order ) {
-        System.out.println("==================>"+order);
-       String currentUser = userDetails.getUsername();
+        System.out.println("==================>" + order);
+        String currentUser = userDetails.getUsername();
         User user1 = userRepo.findUserByUsername(currentUser);
 
 
-                order.setCode(UUID.randomUUID().toString());
-                order.setUser(user1);
-                Bill bill = order.getBill();
-               order = orederRepo.save(order);
-               bill.setOrder(order);
-               bill.setDateFacture(LocalDate.now());
-               bill = billRepo.save(bill);
-               order.setBill(bill);
-               return order;
-
-
-     //   return order;
-
-
+        order.setCode(UUID.randomUUID().toString());
+        order.setUser(user1);
+        Bill bill = order.getBill();
+        order = orederRepo.save(order);
+        bill.setOrder(order);
+        bill.setDateFacture(LocalDate.now());
+        bill = billRepo.save(bill);
+        order.setBill(bill);
+        return order;
     }
 
-    @Override
+        @Override
     public void delete(@AuthenticationPrincipal UserDetails userDetails,int id) {
         String currentUser = userDetails.getUsername();
         User user1 = userRepo.findUserByUsername(currentUser);
