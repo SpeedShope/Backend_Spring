@@ -21,7 +21,7 @@ public class MailServiceImpl {
 
         Bill b = billRepo.findById(idfacture).get();
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setFrom("test.esprit10@gmail.com");
+        simpleMailMessage.setFrom("centralachatpi@gmail.com");
         simpleMailMessage.setTo(b.getOrder().getUser().getEmail());
         simpleMailMessage.setSubject(email.getSubjuct());
         simpleMailMessage.setText("votre facture "+"\n code facture:"+b.getCode()+"\n le prix totale:"+

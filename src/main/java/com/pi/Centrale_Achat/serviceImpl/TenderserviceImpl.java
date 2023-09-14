@@ -203,7 +203,7 @@ public Tender updateTender(@AuthenticationPrincipal UserDetails userDetails,Tend
 
         try {
 
-            tender.setImage( "src\\main\\resources\\images\\" + tender.getName() + tender.getDescription() + ".png");
+            tender.setImage( "src\\main\\resources\\images\\"+ tender.getDescription() + ".png");
 
             InputStream inputStream = image.getInputStream();
 

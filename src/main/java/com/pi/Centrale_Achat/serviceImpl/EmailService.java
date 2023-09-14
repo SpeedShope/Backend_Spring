@@ -47,7 +47,7 @@ public class EmailService {
         // send email to all users
         for (User user : users) {
             for (Role role :user.getRoles() ) {
-                if(role.getName()==ERole.ROLE_OPERATOR && role.getName()==ERole.ROLE_SUPPLIER){
+                if(role.getName()==ERole.ROLE_SUPPLIER){
                     helper.setTo(user.getEmail());
                 javaMailSender.send(message);}
             }
@@ -55,5 +55,6 @@ public class EmailService {
             }
 
     }
+
 }
 

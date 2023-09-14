@@ -80,7 +80,7 @@ public class BillServiceImpl implements BillService {
     public float calculeFacture(int idCmd) {
         Order o = orderRepo.findById(idCmd).orElse(null);
         float m = 0;
-        List<Float> list = o.getProducts().stream().map(product -> product.getPrice()* product.getQte()).collect(Collectors.toList());
+        List<Float> list = o.getProducts().stream().map(product -> product.getPrice()).collect(Collectors.toList());
         for (Float f : list) {
             m = f +m;
         }
