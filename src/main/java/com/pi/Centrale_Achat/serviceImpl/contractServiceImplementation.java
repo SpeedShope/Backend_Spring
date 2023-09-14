@@ -25,8 +25,32 @@ public class contractServiceImplementation implements contractServices {
 		User u = userRepo.findById(userid).get(); 
         c.setUser(u);
 	   return  contractRepository.save(c);
-	    
+	    		
+
+	}
+
+	@Override
+	public java.util.List<Contract> getAllContracts() {
+		return contractRepository.findAll();
+	}
+
+	@Override
+	public Contract getContractById(int id) {
+		return contractRepository.findById(id).get();
+	}
+
+	@Override
+	public Contract acceptContract(int id) {
+		Contract c =contractRepository.findById(id).get(); 
+		c.setAcceptstatus(true);
+		return 		contractRepository.save(c); 
 		
 	}
 
+	@Override
+	public java.util.List<Contract> getUserContract(int userid) {
+		User u = userRepo.findById(userid).get();
+		return u.getContracts();
+	}
+	
 }

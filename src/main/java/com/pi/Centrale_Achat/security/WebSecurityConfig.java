@@ -71,6 +71,8 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 .antMatchers(" /api/user/**","/images/**","/imageProduct/**","/predict/product").permitAll()
                 .antMatchers("/api/admin/**").hasAnyAuthority(ERole.ROLE_ADMIN.toString())
                 .antMatchers("/api/contracts/**").permitAll()
+                .antMatchers("/api/user/**").permitAll()
+
 
 
                 .antMatchers("/api/tender/**").hasAnyAuthority(ERole.ROLE_CUSTOMER.toString(),ERole.ROLE_OPERATOR.toString())
