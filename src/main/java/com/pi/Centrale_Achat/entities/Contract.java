@@ -44,6 +44,8 @@ public class Contract implements Serializable {
 	User user ; 
 	boolean signature ;
 	
+	boolean acceptstatus; 
+	
 	
 	
 	

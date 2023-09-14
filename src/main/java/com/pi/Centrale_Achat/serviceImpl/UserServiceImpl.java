@@ -1,6 +1,7 @@
 package com.pi.Centrale_Achat.serviceImpl;
 
 
+import com.pi.Centrale_Achat.entities.Contract;
 import com.pi.Centrale_Achat.entities.ERole;
 import com.pi.Centrale_Achat.entities.Role;
 import com.pi.Centrale_Achat.entities.User;
@@ -132,7 +133,7 @@ public class UserServiceImpl implements UserService {
 
 	    if (optionalUser.isPresent()) {
 	        User user = optionalUser.get();
-	        
+	      
 	        // Create or retrieve the ROLE_DELIVERY role
 	        Role deliveryRole = rolerep.findByName(ERole.ROLE_DELIVERY).orElse(null);
 	        if (deliveryRole == null) {
@@ -145,7 +146,6 @@ public class UserServiceImpl implements UserService {
 	        Set<Role> userRoles = user.getRoles();
 	        userRoles.add(deliveryRole);
 	        user.setRoles(userRoles);
-	        
 	        // Save the updated user
 	        return userRepository.save(user);
 	    } else {

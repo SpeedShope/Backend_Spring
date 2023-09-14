@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,5 +51,14 @@ public class ContractController {
 	 @GetMapping("getcontractByid/{id}")
 	  Contract findContract(@PathVariable("id") int id ) {
 		 return contractserv.getContractById(id);
+	 }
+	 @PutMapping("acceptContract/{id}")
+		public Contract acceptContract(@PathVariable("id") int id) {
+			return contractserv.acceptContract(id);
+		 
+		}
+	 @GetMapping("getUserContracts/{id}")
+		public java.util.List<Contract> getUserContract(@PathVariable("id") int userid) {
+		 return contractserv.getUserContract(userid);
 	 }
 }
