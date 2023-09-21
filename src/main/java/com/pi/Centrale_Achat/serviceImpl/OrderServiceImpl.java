@@ -9,15 +9,12 @@ import com.pi.Centrale_Achat.repositories.ProductRepo;
 import com.pi.Centrale_Achat.repositories.UserRepo;
 import com.pi.Centrale_Achat.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,19 +43,27 @@ public class OrderServiceImpl implements OrderService {
         return order;
     }
 
-        @Override
-    public void delete(@AuthenticationPrincipal UserDetails userDetails,int id) {
-        String currentUser = userDetails.getUsername();
-        User user1 = userRepo.findUserByUsername(currentUser);
+    @Override
+    public void delete(UserDetails userDetails, int id) {
+
+    }
+
+
+    public void delete(int id) {
+
         Order order = orederRepo.findById(id).orElse(null);
-        if(order.getUser().getId()==user1.getId()){
+
             orederRepo.deleteById(id);
-        }
-        else {
+
             System.out.println("erreur");
         }
 
 
+
+
+    @Override
+    public List<Order> getOrdersForUser(User user) {
+        return null;
     }
 
     @Override
@@ -80,8 +85,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getOrdersForUser(User user) {
-        return orederRepo.findByUser(user);
+    public List<Order> getOrdersForUser() {
+        return orederRepo.findAll();
     }
     public User getUser(int id ){
         Order o = orederRepo.findById(id).get();

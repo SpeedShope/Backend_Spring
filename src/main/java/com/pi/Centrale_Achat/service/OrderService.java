@@ -15,4 +15,6 @@ public interface OrderService {
 
     int countCmdBetweenToDate(UserDetails userDetails,Date date1,Date date2);
     Order findOrderByDate(Date d);
+
+    List<Order> getOrdersForUser();
 }

@@ -49,17 +49,12 @@ public class ControllerOrder {
         return ResponseEntity.ok().body(order);
     }
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('CUSTOMER')")
-    public void delete(@AuthenticationPrincipal UserDetails userDetails,@PathVariable("id") int id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        Order order = orderRepo.findById(id).orElse(null);
-        if (order != null && (currentUsername.equals(order.getUser().getUsername()))) {
-            orderService.delete(userDetails,id);
-        } else {
-            throw new AccessDeniedException("You are not authorized to delete this order");
+    @PreAuthorize("hasRole('SUPPLIER')")
+    public void delete(@PathVariable("id") int id) {
+
+            orderService.delete(id);
         }
-    }
+
 
     @GetMapping("/count/{d1}/{d2}")
     @PreAuthorize("hasRole('CUSTOMER')")
@@ -83,16 +78,12 @@ public class ControllerOrder {
 
 
     @GetMapping("/orders")
-    @PreAuthorize("hasRole('CUSTOMER')or hasRole('SUPPLIER')")
-    public List<Order> getOrdersForCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
-        String currentUserName = userDetails.getUsername();
-        User currentUser = userRepo.findUserByUsername(currentUserName);
-        if (currentUser == null) {
-            return Collections.emptyList();
-        } else {
-            return orderService.getOrdersForUser(currentUser);
+    @PreAuthorize("hasRole('SUPPLIER')")
+    public List<Order> getOrdersForCurrentUser() {
+
+            return orderService.getOrdersForUser();
         }
-    }
+
     @GetMapping("/getUser/{id}")
     public User getUser(@PathVariable("id")int id ){
         return orderService.getUser(id);

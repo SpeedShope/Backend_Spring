@@ -72,10 +72,12 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/admin/**").hasAnyAuthority(ERole.ROLE_ADMIN.toString())
                 .antMatchers("/api/contracts/**").permitAll()
                 .antMatchers("/api/user/**").permitAll()
+                .antMatchers("/api/order/**").permitAll()
 
 
 
-                .antMatchers("/api/tender/**").hasAnyAuthority(ERole.ROLE_CUSTOMER.toString(),ERole.ROLE_OPERATOR.toString())
+
+                .antMatchers("/api/tender/**").hasAnyAuthority(ERole.ROLE_CUSTOMER.toString(),ERole.ROLE_SUPPLIER.toString())
                 .antMatchers("/api/OperatorScore/**").permitAll()
                 .antMatchers("/api/comment/**").hasAnyAuthority(ERole.ROLE_CUSTOMER.toString())
                 .antMatchers("/mail/**").permitAll()
