@@ -21,6 +21,9 @@ public class Order implements Serializable {
     int id;
     Date datCmd;
     String code;
+    String adressedestination;
+
+
 
 
 
