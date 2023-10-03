@@ -54,7 +54,6 @@ public class OrderServiceImpl implements OrderService {
         Order order = orederRepo.findById(id).orElse(null);
 
             orederRepo.deleteById(id);
-
             System.out.println("erreur");
         }
 

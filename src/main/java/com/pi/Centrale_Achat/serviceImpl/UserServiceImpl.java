@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -101,7 +101,16 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
-
+     public List < User > getAllDeliveryAgents(){
+    	 Role deliveryRole = rolerep.findByName(ERole.ROLE_DELIVERY).orElse(null);
+    	    
+    	    if (deliveryRole != null) {
+    	        return userRepository.findByRolesContaining(deliveryRole);
+    	    } else {
+    	        // Handle the case where the role doesn't exist
+    	        return Collections.emptyList(); // or throw an exception
+    	    }
+     }
 
 
 

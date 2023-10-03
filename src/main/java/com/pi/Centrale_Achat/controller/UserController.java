@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.sun.mail.imap.protocol.BASE64MailboxDecoder.decode;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
@@ -66,6 +68,11 @@ public class UserController {
 		 return userService.changeUserRole(id);
 		 
 	 }
+  
+   @GetMapping("/getusersByroles")
+   List<User> getAllDeliveryAgents(){
+	   return userService.getAllDeliveryAgents(); 
+   }
 
 
 }

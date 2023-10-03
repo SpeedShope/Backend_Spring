@@ -22,7 +22,7 @@ public class Order implements Serializable {
     Date datCmd;
     String code;
     String adressedestination;
-
+    boolean statusOrder; 
 
 
 
@@ -41,5 +41,8 @@ public class Order implements Serializable {
     Delivery delivery;
     @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST})
     List<RequestClaim>requestClaims;
-
+    @JsonIgnore
+    @OneToOne(mappedBy = "order")
+    Mission mission ; 
+    
 }
