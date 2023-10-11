@@ -49,7 +49,8 @@ public class EmailService {
             for (Role role :user.getRoles() ) {
                 if(role.getName()==ERole.ROLE_SUPPLIER){
                     helper.setTo(user.getEmail());
-                javaMailSender.send(message);}
+                javaMailSender.send(message);
+                     }
             }
 
             }

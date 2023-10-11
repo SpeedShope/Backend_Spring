@@ -55,7 +55,7 @@ public class ControllerProduct {
         return ResponseEntity.ok(products);
     }
     @GetMapping("/showAll/{idtender}")
-    @PreAuthorize("hasRole('CUSTOMER')")
+
     public ResponseEntity< List<Product>>showAll_Productstender(@PathVariable int idtender){
         List<Product> products=productService.show_AllProductstender(idtender);
         return ResponseEntity.ok(products);
@@ -183,18 +183,21 @@ public class ControllerProduct {
     }}
 
     @PostMapping("/provideTender/{idTender}")
-    @PreAuthorize("hasRole('OPERATOR')")
-    public ResponseEntity<?> provide_Tender(@AuthenticationPrincipal UserDetails userDetails ,@RequestParam String name,@RequestParam float price, @RequestParam int qte
-            ,@RequestParam String description,@RequestParam int minStock, @RequestParam MultipartFile file,@PathVariable int idTender)throws IOException {
+    @PreAuthorize("hasRole('SUPPLIER')")
+    public ResponseEntity<?> provider_tender(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("name") String name, @RequestParam("price") float price,
+                                  @RequestParam("qte") int qte, @RequestParam("description") String description, @RequestParam("minStock") int minStock,
+                                  @PathVariable("idTender") int idTender, @RequestParam("file") MultipartFile file) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserName = authentication.getName();
+        User currentUser = userRepo.findUserByUsername(currentUserName);
+        if (currentUser==null) {
+            System.out.println("Vous devez se connecter");
+        }
+        productService.provide_Tender(userDetails,name, price, qte, description, minStock, file,idTender);
 
-            productService.provide_Tender(userDetails,name, price, qte, description, minStock,  file,idTender);
-            return ResponseEntity.ok("tender ajouté avec success");
-
-
-
-
+        return new ResponseEntity<>("ajouter avec success", HttpStatus.OK);
     }
+
     @GetMapping("/showproduct/{idProduct}")
 
     public Product showProduct(@PathVariable int idProduct){
