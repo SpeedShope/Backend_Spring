@@ -164,6 +164,22 @@ public class UserServiceImpl implements UserService {
 	    }
 	}
 
+
+
+
+
+	@Override
+	public void deleteUser(int id) {
+	    User u = userRepository.findById(id).orElse(null);
+	    if (u != null) {
+	        userRepository.delete(u);
+	    } else {
+	        // Handle the case where the user with the specified ID doesn't exist
+	        System.out.println("User with ID " + id + " not found.");
+	    }
+	}
+
+
 	}
 
 

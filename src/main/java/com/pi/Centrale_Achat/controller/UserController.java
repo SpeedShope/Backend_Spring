@@ -32,6 +32,13 @@ public class UserController {
     private final    UserServiceImpl userService;
 //
 
+    
+     @GetMapping("/getAllUsers")
+     public List<User> getAllUsers() {
+    	 return userService.getAllUsers(); 
+     }
+    
+    
     @PutMapping("/modifieruser")
     public ResponseEntity<?> updateUser(@RequestBody User updatedUser,
                                         @RequestParam("currentPassword") String currentPassword,
@@ -74,5 +81,9 @@ public class UserController {
 	   return userService.getAllDeliveryAgents(); 
    }
 
+   @DeleteMapping("/DeleteUser/{id}")
+	public void deleteUser( @PathVariable("id") int id) {
+	    userService.deleteUser(id); 
+   }
 
 }

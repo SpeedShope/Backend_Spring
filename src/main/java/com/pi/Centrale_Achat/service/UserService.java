@@ -18,5 +18,6 @@ public interface UserService {
      User findUserByUsername(String username); 
      public User ValidateAccount(String username) ; 
      public  User changeUserRole(int id);  
+     public void deleteUser(int id ) ; 
      
 }

@@ -99,6 +99,130 @@ public class AuthController {
     }
     
 
+    @PostMapping("/signupAdmin")
+    public ResponseEntity<?> registerAdmin(@Valid SignupRequest signUpRequest, BindingResult result, HttpServletRequest request) throws MessagingException {
+       
+    	  // Check for validation errors in the request body
+        if (result.hasErrors()) {
+            // Handle validation errors and return a bad request response
+            List<String> errors = result.getFieldErrors().stream()
+                .map(error -> error.getDefaultMessage())
+                .collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(new MessageResponse("errors"));
+        }
+
+    	if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Username is already taken!"));
+        }
+
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email is already in use!"));
+        }
+
+        User user = null;
+        try {
+            user = new User(signUpRequest.getNom(), signUpRequest.getPrenom(), signUpRequest.getUsername(),
+                    new SimpleDateFormat("yyyy-MM-dd").parse(signUpRequest.getDateNaissance()),
+                    encoder.encode(signUpRequest.getPassword()),
+                    signUpRequest.getEmail(), signUpRequest.getAddress(),signUpRequest.getNumTel()
+            );
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        String verificationCode = CodeGen().toString();
+
+        List<String> strRoles = signUpRequest.getRole();
+        System.out.println("Roles received "+strRoles);
+        Set<Role> roles = new HashSet<>();
+        if (strRoles == null || strRoles.isEmpty()) {
+        	
+            Role clientrole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                    .orElseGet(() -> roleRepository.save(new Role(ERole.ROLE_ADMIN)));
+            
+            roles.add(clientrole);
+        } else {
+            for (String roleName : strRoles) {
+                if (ERole.ROLE_OPERATOR.name().equals(roleName)) {
+
+                    Role operateurrole = roleRepository.findByName(ERole.ROLE_OPERATOR)
+                            .orElseGet(() -> roleRepository.save(new Role(ERole.ROLE_OPERATOR)));
+                    roles.add(operateurrole);
+
+                } if (ERole.ROLE_ADMIN.name().equals(roleName)) {
+                    Role admin = roleRepository.findByName(ERole.ROLE_ADMIN)
+                            .orElseGet(() -> roleRepository.save(new Role(ERole.ROLE_ADMIN)));
+                    roles.add(admin);}
+                else if (ERole.ROLE_CUSTOMER.name().equals(roleName)) {
+                    Role clientrole = roleRepository.findByName(ERole.ROLE_CUSTOMER)
+                            .orElseGet(() -> roleRepository.save(new Role(ERole.ROLE_CUSTOMER)));
+                    roles.add(clientrole);
+                } else if (ERole.ROLE_SUPPLIER.name().equals(roleName)) {
+                    Role fournisseurrole = roleRepository.findByName(ERole.ROLE_SUPPLIER)
+                            .orElseGet(() -> roleRepository.save(new Role(ERole.ROLE_SUPPLIER)));
+                    roles.add(fournisseurrole);
+                }
+                else if (ERole.ROLE_DELIVERY.name().equals(roleName)) {
+                    Role livreurrole = roleRepository.findByName(ERole.ROLE_DELIVERY)
+                            .orElseGet(() -> roleRepository.save(new Role(ERole.ROLE_DELIVERY)));
+                    roles.add(livreurrole);
+                }
+            }
+        }
+
+        user.setRoles(roles);
+
+        user.setVerificationCode(verificationCode);
+        // Handle the image upload
+        String imageName = null;
+        try {
+            MultipartFile imageFile = signUpRequest.getImage();
+            if (imageFile != null && !imageFile.isEmpty()) {
+                // Generate a unique image name, you can use UUID.randomUUID().toString() for example.
+                imageName = signUpRequest.getUsername()+".png";
+                Path imagePath = Paths.get("src/main/resources/images", imageName);
+                Files.write(imagePath, imageFile.getBytes());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle the exception as per your requirement
+        }
+        user.setImage(imageName);
+        userRepository.save(user);
+        String appUrl = "http://localhost:9090/api/auth/SignUp";
+        String message = "<html><body><p>Bonjour " + signUpRequest.getNom() + ",</p>" +
+                "<p>Votre inscription sur notre site a été effectuée avec succès.</p>" +
+                "<p>Veuillez cliquer sur le lien suivant pour vérifier votre compte :</p>" +
+                "<table border='1'><tr><td>URL</td><td>" + appUrl + "/verify?code=" + verificationCode + "</td></tr>" +
+                "<tr><td>Code de vérification</td><td>" + verificationCode + "</td></tr></table>" +
+                "<p>Merci de votre confiance.</p></body></html>";
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(signUpRequest.getEmail());
+        mailMessage.setSubject("Inscription réussie");
+        mailMessage.setText("Un email de confirmation vous a été envoyé à l'adresse " + signUpRequest.getEmail() + ". Veuillez suivre les instructions pour vérifier votre compte.");
+
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+        helper.setTo(mailMessage.getTo());
+        helper.setSubject(mailMessage.getSubject());
+        helper.setText(message, true);
+
+        javaMailSender.send(mimeMessage);
+
+
+
+        String responseMessage = "Un email de confirmation a été envoyé à l'adresse " + signUpRequest.getEmail() + ". " +
+                "Veuillez suivre les instructions pour vérifier votre compte.";
+
+        return ResponseEntity.ok(new MessageResponse(responseMessage));
+
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid SignupRequest signUpRequest, BindingResult result, HttpServletRequest request) throws MessagingException {
        
@@ -140,8 +264,10 @@ public class AuthController {
         System.out.println("Roles received "+strRoles);
         Set<Role> roles = new HashSet<>();
         if (strRoles == null || strRoles.isEmpty()) {
+        	
             Role clientrole = roleRepository.findByName(ERole.ROLE_CUSTOMER)
                     .orElseGet(() -> roleRepository.save(new Role(ERole.ROLE_CUSTOMER)));
+            
             roles.add(clientrole);
         } else {
             for (String roleName : strRoles) {
