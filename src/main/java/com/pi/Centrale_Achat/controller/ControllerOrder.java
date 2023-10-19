@@ -49,7 +49,6 @@ public class ControllerOrder {
         return ResponseEntity.ok().body(order);
     }
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('SUPPLIER')")
     public void delete(@PathVariable("id") int id) {
 
             orderService.delete(id);
@@ -78,11 +77,11 @@ public class ControllerOrder {
 
 
     @GetMapping("/orders")
-    @PreAuthorize("hasRole('SUPPLIER')")
     public List<Order> getOrdersForCurrentUser() {
 
             return orderService.getOrdersForUser();
         }
+    
 
     @GetMapping("/getUser/{id}")
     public User getUser(@PathVariable("id")int id ){

@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -101,7 +101,16 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
-
+     public List < User > getAllDeliveryAgents(){
+    	 Role deliveryRole = rolerep.findByName(ERole.ROLE_DELIVERY).orElse(null);
+    	    
+    	    if (deliveryRole != null) {
+    	        return userRepository.findByRolesContaining(deliveryRole);
+    	    } else {
+    	        // Handle the case where the role doesn't exist
+    	        return Collections.emptyList(); // or throw an exception
+    	    }
+     }
 
 
 
@@ -154,6 +163,22 @@ public class UserServiceImpl implements UserService {
 	        return null;
 	    }
 	}
+
+
+
+
+
+	@Override
+	public void deleteUser(int id) {
+	    User u = userRepository.findById(id).orElse(null);
+	    if (u != null) {
+	        userRepository.delete(u);
+	    } else {
+	        // Handle the case where the user with the specified ID doesn't exist
+	        System.out.println("User with ID " + id + " not found.");
+	    }
+	}
+
 
 	}
 

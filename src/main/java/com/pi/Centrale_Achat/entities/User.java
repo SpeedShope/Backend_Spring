@@ -63,6 +63,9 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user",cascade = CascadeType.PERSIST)
     @JsonIgnore
     List<Contract> contracts ; 
+    @OneToMany(mappedBy = "user") // "user" refers to the user field in the Mission entity
+    @JsonIgnore
+    List<Mission> missions; 
     
     public User(String nom,String prenom,String username,String address, String numTel,String email,String password,Date dateNaissance){
         this.nom = nom;

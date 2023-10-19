@@ -13,8 +13,11 @@ public interface UserService {
      User getMyProfile(UserDetails userDetails);
 
      List <User> getAllUsers();
+     List<User> getAllDeliveryAgents(); 
+     
      User findUserByUsername(String username); 
      public User ValidateAccount(String username) ; 
      public  User changeUserRole(int id);  
+     public void deleteUser(int id ) ; 
      
 }
